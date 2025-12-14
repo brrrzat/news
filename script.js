@@ -13,12 +13,16 @@ const WorldBtn = document.getElementById("World")
 const TravelBtn = document.getElementById("Travel")
 const PodcastsBtn = document.getElementById("Podcasts")
 
+const nextBtn = document.getElementById("next")
+const prevBtn = document.getElementById("prev")
+
 
 localStorage.setItem("localQuery", "Politics")
-
+localStorage.setItem("localPage", 1)
 async function fetchNews() { 
   const raw = JSON.stringify({
-    "q": localStorage.getItem("localQuery")
+    "q": localStorage.getItem("localQuery"),
+    "page": localStorage.getItem("localPage")
   });
 
   const requestOptions = {
@@ -77,7 +81,7 @@ function renderNews(newsArray){
   `;
   
  
-  newsContainer.appendChild(newsCard); 
+  newsContainer.appendChild(newsCard);  
  });
 }
 
@@ -90,6 +94,21 @@ function trendingNew(newsArray){
 
 }
 
+nextBtn.addEventListener("click", ()=>{
+    const currentPage = localStorage.getItem("localPage") + 1;
+    localStorage.setItem("localPage", currentPage)
+    fetchNews();
+})
+prevBtn.addEventListener("click", ()=>{
+    let currentPage = parseInt(localStorage.getItem("localPage")) || 1
+    if (currentPage > 1) {
+        currentPage = currentPage - 1;
+        localStorage.setItem("localPage", currentPage);
+        fetchNews();
+    } else {
+        console.log("Уже на первой странице.");
+    }
+})
 
 
 CoronaBtn.addEventListener("click", () => {
