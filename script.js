@@ -19,6 +19,9 @@ const prevBtn = document.getElementById("prev")
 
 localStorage.setItem("localQuery", "Politics")
 localStorage.setItem("localPage", 1)
+
+const featuredContainer = document.getElementById("featured-news");
+
 async function fetchNews() { 
   const raw = JSON.stringify({
     "q": localStorage.getItem("localQuery"),
@@ -38,10 +41,23 @@ async function fetchNews() {
 
     console.log(result);
     
-    if (result.news) {
-      renderNews(result.news); 
+    if (result.news && result.news.length > 0) {
+      
+      let newsList = [...result.news];
+
+      const randomIndex = Math.floor(Math.random() * newsList.length);
+     
+      const randomNewsItem = newsList[randomIndex];
+
+      newsList.splice(randomIndex, 1);
+
+      renderFeaturedNews(randomNewsItem);
+
+
+      renderNews(newsList); 
     } else {
       newsContainer.innerHTML = "<p>No news articles found.</p>";
+      featuredContainer.innerHTML = ""; 
     }
   } catch (error) {
     console.error(error);
@@ -49,6 +65,42 @@ async function fetchNews() {
   }
 }
 
+
+function renderFeaturedNews(item) {
+    featuredContainer.innerHTML = "";
+
+    const poster = item.imageUrl ? item.imageUrl : "https://via.placeholder.com/600x400?text=No+Image";
+    
+   
+    const heroHTML = `
+        <div class="hero-card">
+            <a href="${item.link}" target="_blank" style="display:contents; color:inherit; text-decoration:none;">
+                <div class="hero-image-container">
+                    <img src="${poster}" alt="News Image">
+                </div>
+                <div class="hero-content">
+                    <div class="hero-header">
+                        <span class="trending-tag">Trending</span>
+                        <div class="hero-icons">
+                            <span>♡</span>
+                            <span>↥</span>
+                            <span>⚑</span>
+                        </div>
+                    </div>
+                    <div class="hero-title">${item.title}</div>
+                    <div class="hero-snippet">${item.snippet}</div>
+                    <div class="hero-footer">
+                        <span>${item.date}</span>
+                        <span>|</span>
+                        <span>By ${item.source}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    `;
+
+    featuredContainer.innerHTML = heroHTML;
+}
 fetchNews();
 
 
