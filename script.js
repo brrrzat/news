@@ -27,7 +27,7 @@ async function fetchNews() {
     "q": localStorage.getItem("localQuery"),
     "page": localStorage.getItem("localPage")
   });
-
+  
   const requestOptions = {
     method: "POST",
     headers: myHeaders,
